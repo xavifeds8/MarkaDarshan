@@ -971,13 +971,14 @@
             let name = document.getElementById('modalInput').value.trim();
             if (!name) return;
             
+            const mode = modalMode;
             closeModal();
             
-            if (modalMode === 'folder') {
+            if (mode === 'folder') {
                 createFolder(name);
-            } else if (modalMode === 'rename') {
+            } else if (mode === 'rename') {
                 performRename(name);
-            } else if (modalMode === 'file') {
+            } else if (mode === 'file') {
                 // File mode - add .md extension if not present
                 if (!name.endsWith('.md') && !name.endsWith('.markdown')) name += '.md';
                 const path = currentPath ? currentPath + '/' + name : name;
