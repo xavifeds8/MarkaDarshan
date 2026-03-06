@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.markdownpreview'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+application {
+    mainClass = 'com.markdownpreview.MarkdownPreviewApp'
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.markdownpreview.MarkdownPreviewApp'
+        )
+    }
+}
+
+// Fat JAR task for easy deployment (zero dependencies, so same as regular jar)
+tasks.register('fatJar', Jar) {
+    archiveClassifier = 'all'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes(
+            'Main-Class': 'com.markdownpreview.MarkdownPreviewApp'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
+// Tests use JUnit 5 - uncomment when Maven Central is accessible
+// repositories { mavenCentral() }
+// dependencies {
+//     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
+//     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+// }
+// tasks.named('test') { useJUnitPlatform() }
