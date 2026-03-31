@@ -152,6 +152,121 @@
             margin: 0 4px;
             font-size: 11px;
         }
+        
+        /* Search Bar */
+        .search-container {
+            padding: 12px 20px;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            display: none;
+        }
+        .search-container.active {
+            display: block;
+        }
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .search-input {
+            flex: 1;
+            padding: 10px 40px 10px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .search-input:focus {
+            border-color: var(--text-accent);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+        .search-close {
+            padding: 8px 12px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 20px;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+        .search-close:hover {
+            background: var(--bg-hover);
+        }
+        .search-results {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 12px;
+            display: none;
+        }
+        .search-results.active {
+            display: block;
+        }
+        .search-result-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .search-result-item:hover {
+            background: var(--bg-hover);
+            border-color: var(--text-accent);
+            transform: translateX(4px);
+        }
+        .search-result-file {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .search-result-line {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .search-result-content {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 13px;
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+            padding: 8px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .search-highlight {
+            background: #fff3cd;
+            color: #856404;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        .search-count {
+            padding: 8px 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .search-empty {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
         .file-list { flex: 1; overflow-y: auto; padding: 8px 12px; }
         .file-item {
             display: flex; align-items: center; padding: 10px 12px;
@@ -499,7 +614,10 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <h1><span>📝</span> MD Preview</h1>
-                <div class="header-buttons">
+                <div class="header-buttons" style="display: flex; gap: 8px;">
+                    <button class="btn-new-dropdown" onclick="openSearch()" title="Search in files (Cmd+Shift+F)" style="background: #34a853; padding: 8px 12px;">
+                        <span style="font-size:16px;">🔍</span>
+                    </button>
                     <button class="btn-new-dropdown" onclick="toggleDropdown()" title="New...">
                         <span style="font-size:16px;">+</span> New
                         <span class="arrow">▼</span>
@@ -517,6 +635,15 @@
                 </div>
             </div>
             <div class="breadcrumb" id="breadcrumb"></div>
+            <div class="search-container" id="searchContainer">
+                <div class="search-input-wrapper">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search in files... (Cmd+Shift+F)" oninput="performSearch()">
+                    <span class="search-icon">🔍</span>
+                    <button class="search-close" onclick="closeSearch()" title="Close search">✕</button>
+                </div>
+            </div>
+            <div class="search-count" id="searchCount" style="display:none;"></div>
+            <div class="search-results" id="searchResults"></div>
             <div class="file-list" id="fileList"></div>
         </div>
         <div class="main-content" id="mainContent">
@@ -1072,6 +1199,114 @@
                 showNewFolderModal();
             }
         }
+
+        // =========================================================================
+        // Search Functions
+        // =========================================================================
+        let searchTimeout = null;
+        
+        function openSearch() {
+            document.getElementById('searchContainer').classList.add('active');
+            document.getElementById('searchResults').classList.add('active');
+            document.getElementById('fileList').style.display = 'none';
+            document.getElementById('searchInput').focus();
+        }
+        
+        function closeSearch() {
+            document.getElementById('searchContainer').classList.remove('active');
+            document.getElementById('searchResults').classList.remove('active');
+            document.getElementById('searchCount').style.display = 'none';
+            document.getElementById('fileList').style.display = 'block';
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '';
+        }
+        
+        async function performSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            const searchResults = document.getElementById('searchResults');
+            const searchCount = document.getElementById('searchCount');
+            
+            if (searchTimeout) clearTimeout(searchTimeout);
+            
+            if (!query) {
+                searchResults.innerHTML = '';
+                searchCount.style.display = 'none';
+                return;
+            }
+            
+            searchResults.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            searchCount.style.display = 'none';
+            
+            searchTimeout = setTimeout(async () => {
+                try {
+                    const resp = await fetch('/api/search', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ path: currentPath, query: query })
+                    });
+                    const data = await resp.json();
+                    
+                    if (data.error) {
+                        searchResults.innerHTML = '<div class="error-msg">' + esc(data.error) + '</div>';
+                        return;
+                    }
+                    
+                    displaySearchResults(data.results, query);
+                } catch (e) {
+                    searchResults.innerHTML = '<div class="error-msg">Search failed: ' + esc(e.message) + '</div>';
+                }
+            }, 300);
+        }
+        
+        function displaySearchResults(results, query) {
+            const searchResults = document.getElementById('searchResults');
+            const searchCount = document.getElementById('searchCount');
+            
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="search-empty">No results found for "' + esc(query) + '"</div>';
+                searchCount.style.display = 'none';
+                return;
+            }
+            
+            searchCount.textContent = results.length + ' result' + (results.length !== 1 ? 's' : '') + ' found';
+            searchCount.style.display = 'block';
+            
+            let html = '';
+            for (const result of results) {
+                const highlighted = highlightMatch(result.lineContent, result.matchStart, result.matchEnd);
+                html += '<div class="search-result-item" onclick="openSearchResult(\'' + escAttr(result.filePath) + '\')">';
+                html += '<div class="search-result-file">📄 ' + esc(result.fileName) + '</div>';
+                html += '<div class="search-result-line">Line ' + result.lineNumber + '</div>';
+                html += '<div class="search-result-content">' + highlighted + '</div>';
+                html += '</div>';
+            }
+            
+            searchResults.innerHTML = html;
+        }
+        
+        function highlightMatch(content, start, end) {
+            const before = esc(content.substring(0, start));
+            const match = esc(content.substring(start, end));
+            const after = esc(content.substring(end));
+            return before + '<span class="search-highlight">' + match + '</span>' + after;
+        }
+        
+        function openSearchResult(filePath) {
+            closeSearch();
+            loadMarkdown(filePath);
+        }
+        
+        // Keyboard shortcut: Cmd+Shift+F or Ctrl+Shift+F
+        document.addEventListener('keydown', function(e) {
+            if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'F') {
+                e.preventDefault();
+                openSearch();
+            }
+            // ESC to close search
+            if (e.key === 'Escape' && document.getElementById('searchContainer').classList.contains('active')) {
+                closeSearch();
+            }
+        });
 
         // =========================================================================
         // Initialize

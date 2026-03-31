@@ -273,6 +273,91 @@ public class FileService {
     }
 
     // =========================================================================
+    // Search files
+    // =========================================================================
+
+    /**
+     * Represents a single search result.
+     */
+    public static class SearchResult {
+        public final String filePath;
+        public final String fileName;
+        public final int lineNumber;
+        public final String lineContent;
+        public final int matchStart;
+        public final int matchEnd;
+
+        public SearchResult(String filePath, String fileName, int lineNumber, 
+                          String lineContent, int matchStart, int matchEnd) {
+            this.filePath = filePath;
+            this.fileName = fileName;
+            this.lineNumber = lineNumber;
+            this.lineContent = lineContent;
+            this.matchStart = matchStart;
+            this.matchEnd = matchEnd;
+        }
+    }
+
+    /**
+     * Search for a query string across all files in a directory recursively.
+     */
+    public List<SearchResult> searchFiles(String relativePath, String query) throws IOException {
+        if (query == null || query.isBlank()) {
+            return Collections.emptyList();
+        }
+
+        Path targetDir = PathValidator.resolveAndValidate(rootDir, relativePath);
+        if (!Files.isDirectory(targetDir)) {
+            throw new IllegalArgumentException("Path must be a directory");
+        }
+
+        List<SearchResult> results = new ArrayList<>();
+        String lowerQuery = query.toLowerCase();
+
+        try (var stream = Files.walk(targetDir)) {
+            stream.filter(Files::isRegularFile)
+                  .filter(p -> !p.getFileName().toString().startsWith("."))
+                  .forEach(file -> {
+                      try {
+                          searchInFile(file, query, lowerQuery, results);
+                      } catch (IOException e) {
+                          // Skip files that can't be read
+                          logger.warning("Could not read file: " + file + " - " + e.getMessage());
+                      }
+                  });
+        }
+
+        return results;
+    }
+
+    private void searchInFile(Path file, String query, String lowerQuery, List<SearchResult> results) 
+            throws IOException {
+        String relativePath = rootDir.relativize(file).toString();
+        String fileName = file.getFileName().toString();
+        
+        List<String> lines = Files.readAllLines(file, StandardCharsets.UTF_8);
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            String lowerLine = line.toLowerCase();
+            
+            int index = lowerLine.indexOf(lowerQuery);
+            while (index != -1) {
+                results.add(new SearchResult(
+                    relativePath,
+                    fileName,
+                    i + 1, // Line numbers start at 1
+                    line,
+                    index,
+                    index + query.length()
+                ));
+                
+                // Find next occurrence in the same line
+                index = lowerLine.indexOf(lowerQuery, index + 1);
+            }
+        }
+    }
+
+    // =========================================================================
     // Helpers
     // =========================================================================
 
