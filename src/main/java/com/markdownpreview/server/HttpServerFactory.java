@@ -49,8 +49,9 @@ public final class HttpServerFactory {
         server.createContext("/api/rename", new RenameHandler(fileService, config));
         server.createContext("/api/delete", new DeleteHandler(fileService, config));
         server.createContext("/api/move", new MoveHandler(fileService, config));
+        server.createContext("/api/search", new SearchHandler(fileService, config));
 
-        logger.info("Registered 7 API routes");
+        logger.info("Registered 8 API routes");
         return server;
     }
 }
