@@ -3,34 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown Preview - Modern</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <title>Markdown Preview</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --sidebar-width: 280px;
+            --sidebar-width: 320px;
             --bg-primary: #ffffff;
-            --bg-secondary: #fafbfc;
-            --bg-sidebar: #f8f9fa;
-            --bg-hover: #f0f2f5;
-            --bg-active: #e8f0fe;
-            --text-primary: #202124;
-            --text-secondary: #5f6368;
-            --text-accent: #1a73e8;
-            --border-color: #dadce0;
-            --shadow-sm: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
-            --shadow-md: 0 1px 3px 0 rgba(60,64,67,.3), 0 4px 8px 3px rgba(60,64,67,.15);
+            --bg-secondary: #f6f8fa;
+            --bg-sidebar: #f0f2f5;
+            --bg-hover: #e8eaed;
+            --bg-active: #dbeafe;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-accent: #2563eb;
+            --border-color: #e5e7eb;
         }
         body {
-            font-family: 'Google Sans', 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: var(--bg-secondary);
             color: var(--text-primary);
             height: 100vh;
             overflow: hidden;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
         .app { display: flex; height: 100vh; }
 
@@ -40,319 +36,51 @@
             background: var(--bg-sidebar);
             border-right: 1px solid var(--border-color);
             display: flex; flex-direction: column; height: 100vh;
-            box-shadow: 2px 0 8px rgba(0,0,0,0.04);
         }
         .sidebar-header {
-            padding: 16px 20px;
+            padding: 12px 20px;
             border-bottom: 1px solid var(--border-color);
             background: var(--bg-primary);
             display: flex; align-items: center; justify-content: space-between;
         }
         .sidebar-header h1 {
-            font-size: 20px; font-weight: 500;
-            display: flex; align-items: center; gap: 10px;
-            color: var(--text-primary);
-            letter-spacing: -0.2px;
+            font-size: 18px; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
         }
-        .sidebar-header h1 span {
-            font-size: 24px;
-        }
-        .header-buttons {
-            position: relative;
-        }
-        .btn-new-dropdown {
+        .btn-new {
             display: flex; align-items: center; gap: 6px;
-            padding: 8px 16px; border: none; border-radius: 20px;
-            font-size: 14px; font-weight: 500; cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 6px 14px; border: none; border-radius: 6px;
             background: var(--text-accent); color: white;
-            box-shadow: var(--shadow-sm);
-        }
-        .btn-new-dropdown:hover { 
-            background: #1557b0;
-            box-shadow: var(--shadow-md);
-            transform: translateY(-1px);
-        }
-        .btn-new-dropdown:active {
-            transform: translateY(0);
-        }
-        .btn-new-dropdown .arrow {
-            margin-left: 2px;
-            font-size: 10px;
-            transition: transform 0.2s;
-        }
-        .btn-new-dropdown.open .arrow {
-            transform: rotate(180deg);
-        }
-        
-        /* Dropdown Menu */
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 8px;
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: var(--shadow-md);
-            padding: 8px;
-            z-index: 1000;
-            min-width: 200px;
-            display: none;
-            animation: dropdownSlide 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        @keyframes dropdownSlide {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .dropdown-menu.show {
-            display: block;
-        }
-        .dropdown-menu-item {
-            padding: 10px 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-            color: var(--text-primary);
-            border-radius: 8px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
             transition: background 0.15s;
-            font-weight: 400;
         }
-        .dropdown-menu-item:hover {
-            background: var(--bg-hover);
-        }
-        .dropdown-menu-item .icon {
-            font-size: 18px;
-            width: 24px;
-            text-align: center;
-        }
-        
+        .btn-new:hover { background: #1d4ed8; }
         .breadcrumb {
-            padding: 12px 20px; background: var(--bg-primary);
+            padding: 10px 20px; background: var(--bg-primary);
             border-bottom: 1px solid var(--border-color);
-            font-size: 13px; color: var(--text-secondary);
-            display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-            min-height: 44px;
+            font-size: 12px; color: var(--text-secondary);
+            display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
         }
-        .breadcrumb-item { 
-            cursor: pointer; 
-            color: var(--text-accent);
-            padding: 4px 8px;
-            border-radius: 6px;
-            transition: background 0.15s;
-            font-weight: 500;
-        }
-        .breadcrumb-item:hover { 
-            background: var(--bg-hover);
-        }
-        .breadcrumb-separator { 
-            color: var(--text-secondary); 
-            margin: 0 4px;
-            font-size: 11px;
-        }
-        
-        /* Search Bar */
-        .search-container {
-            padding: 12px 20px;
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
-            display: none;
-        }
-        .search-container.active {
-            display: block;
-        }
-        .search-input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .search-input {
-            flex: 1;
-            padding: 10px 40px 10px 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-        .search-input:focus {
-            border-color: var(--text-accent);
-            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
-        }
-        .search-icon {
-            position: absolute;
-            right: 12px;
-            color: var(--text-secondary);
-            font-size: 16px;
-        }
-        .search-close {
-            padding: 8px 12px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            color: var(--text-secondary);
-            font-size: 20px;
-            border-radius: 6px;
-            transition: background 0.15s;
-        }
-        .search-close:hover {
-            background: var(--bg-hover);
-        }
-        .search-results {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px 12px;
-            display: none;
-        }
-        .search-results.active {
-            display: block;
-        }
-        .search-result-item {
-            padding: 12px;
-            margin-bottom: 8px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .search-result-item:hover {
-            background: var(--bg-hover);
-            border-color: var(--text-accent);
-            transform: translateX(4px);
-        }
-        .search-result-file {
-            font-weight: 500;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .search-result-line {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-        }
-        .search-result-content {
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-            font-size: 13px;
-            color: var(--text-primary);
-            background: var(--bg-secondary);
-            padding: 8px;
-            border-radius: 4px;
-            overflow-x: auto;
-            white-space: pre;
-        }
-        .search-highlight {
-            background: #fff3cd;
-            color: #856404;
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-weight: 600;
-        }
-        .search-count {
-            padding: 8px 20px;
-            font-size: 13px;
-            color: var(--text-secondary);
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-color);
-        }
-        .search-empty {
-            padding: 40px 20px;
-            text-align: center;
-            color: var(--text-secondary);
-        }
-        .file-list { flex: 1; overflow-y: auto; padding: 8px 12px; }
+        .breadcrumb-item { cursor: pointer; color: var(--text-accent); }
+        .breadcrumb-item:hover { text-decoration: underline; }
+        .breadcrumb-separator { color: var(--text-secondary); margin: 0 2px; }
+        .file-list { flex: 1; overflow-y: auto; padding: 8px 0; }
         .file-item {
-            display: flex; align-items: center; padding: 10px 12px;
-            cursor: pointer; transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-            gap: 12px; font-size: 14px; border-radius: 8px;
-            position: relative; margin-bottom: 2px;
-            border: 2px solid transparent;
+            display: flex; align-items: center; padding: 8px 20px;
+            cursor: pointer; transition: background 0.15s; gap: 10px;
+            font-size: 14px; border-left: 3px solid transparent;
         }
-        .file-item:hover { 
-            background: var(--bg-hover);
-        }
-        .file-item.active { 
-            background: var(--bg-active);
-            box-shadow: inset 3px 0 0 var(--text-accent);
-        }
-        .file-item.drag-over { 
-            background: var(--bg-active);
-            border: 2px dashed var(--text-accent);
-            transform: scale(1.02);
-        }
-        .file-item.dragging { opacity: 0.4; }
-        .file-item .file-icon { 
-            font-size: 20px; 
-            flex-shrink: 0; 
-            width: 24px; 
-            text-align: center;
-            transition: transform 0.2s;
-        }
-        .file-item:hover .file-icon {
-            transform: scale(1.1);
-        }
-        .file-item .file-name { 
-            flex: 1; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            white-space: nowrap;
-            font-weight: 400;
-        }
-        .file-item.directory .file-name { font-weight: 500; color: var(--text-primary); }
-        .file-item.markdown .file-name { color: var(--text-primary); }
-        .file-item.other-file { opacity: 0.6; }
+        .file-item:hover { background: var(--bg-hover); }
+        .file-item.active { background: var(--bg-active); border-left-color: var(--text-accent); }
+        .file-item .file-icon { font-size: 18px; flex-shrink: 0; width: 24px; text-align: center; }
+        .file-item .file-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .file-item.directory .file-name { font-weight: 500; }
+        .file-item.markdown .file-name { color: var(--text-accent); }
+        .file-item.editable .file-name { color: var(--text-accent); }
+        .file-item.other-file { opacity: 0.5; }
         .file-item .file-badge {
-            font-size: 10px; padding: 3px 8px; border-radius: 12px;
-            background: #e8f0fe; color: var(--text-accent); font-weight: 600;
-            letter-spacing: 0.3px;
-        }
-
-        /* Context Menu */
-        .context-menu {
-            position: fixed;
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: var(--shadow-md);
-            padding: 8px;
-            z-index: 1000;
-            min-width: 200px;
-            animation: contextMenuSlide 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        @keyframes contextMenuSlide {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .context-menu-item {
-            padding: 10px 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-            border-radius: 8px;
-            transition: background 0.15s;
-        }
-        .context-menu-item:hover {
-            background: var(--bg-hover);
-        }
-        .context-menu-item.danger {
-            color: #d93025;
-        }
-        .context-menu-item.danger:hover {
-            background: #fce8e6;
-        }
-        .context-menu-separator {
-            height: 1px;
-            background: var(--border-color);
-            margin: 6px 8px;
+            font-size: 10px; padding: 2px 6px; border-radius: 10px;
+            background: #dbeafe; color: #2563eb; font-weight: 600;
         }
 
         /* Main content */
@@ -362,77 +90,26 @@
             justify-content: center; height: 100%; color: var(--text-secondary);
             text-align: center; padding: 40px;
         }
-        .welcome .welcome-icon { 
-            font-size: 72px; 
-            margin-bottom: 24px;
-            animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        .welcome h2 { 
-            font-size: 28px; 
-            margin-bottom: 12px; 
-            color: var(--text-primary);
-            font-weight: 400;
-            letter-spacing: -0.5px;
-        }
-        .welcome p { 
-            font-size: 16px; 
-            max-width: 520px; 
-            line-height: 1.7;
-            color: var(--text-secondary);
-        }
+        .welcome .welcome-icon { font-size: 64px; margin-bottom: 20px; }
+        .welcome h2 { font-size: 24px; margin-bottom: 8px; color: var(--text-primary); }
+        .welcome p { font-size: 16px; max-width: 400px; line-height: 1.6; }
         .content-header {
-            padding: 16px 32px; border-bottom: 1px solid var(--border-color);
-            background: var(--bg-primary); display: flex; align-items: center; gap: 12px;
-            flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            padding: 12px 32px; border-bottom: 1px solid var(--border-color);
+            background: var(--bg-secondary); display: flex; align-items: center; gap: 10px;
+            flex-shrink: 0;
         }
-        .content-header h2 { 
-            font-size: 18px; 
-            font-weight: 400;
-            letter-spacing: -0.2px;
-        }
-        .content-header .file-path { 
-            font-size: 13px; 
-            color: var(--text-secondary); 
-            margin-left: auto;
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-        }
+        .content-header h2 { font-size: 16px; font-weight: 600; }
+        .content-header .file-path { font-size: 12px; color: var(--text-secondary); margin-left: auto; }
         .content-header .btn-edit, .content-header .btn-save, .content-header .btn-cancel {
-            padding: 8px 16px; border: none; border-radius: 20px;
-            font-size: 13px; font-weight: 500; cursor: pointer; 
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: var(--shadow-sm);
+            padding: 5px 12px; border: 1px solid var(--border-color); border-radius: 6px;
+            font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s;
         }
-        .content-header .btn-edit { 
-            background: white; 
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-        .content-header .btn-edit:hover { 
-            background: var(--bg-hover);
-            box-shadow: var(--shadow-md);
-            transform: translateY(-1px);
-        }
-        .content-header .btn-save { 
-            background: #1e8e3e; 
-            color: white;
-        }
-        .content-header .btn-save:hover { 
-            background: #188038;
-            box-shadow: var(--shadow-md);
-            transform: translateY(-1px);
-        }
-        .content-header .btn-cancel { 
-            background: white; 
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-        }
-        .content-header .btn-cancel:hover { 
-            background: var(--bg-hover);
-        }
+        .content-header .btn-edit { background: white; color: var(--text-primary); }
+        .content-header .btn-edit:hover { background: var(--bg-hover); }
+        .content-header .btn-save { background: #16a34a; color: white; border-color: #16a34a; }
+        .content-header .btn-save:hover { background: #15803d; }
+        .content-header .btn-cancel { background: white; color: var(--text-secondary); }
+        .content-header .btn-cancel:hover { background: var(--bg-hover); }
 
         .markdown-body {
             padding: 32px; max-width: 900px; margin: 0 auto;
@@ -448,14 +125,14 @@
         .markdown-body a { color: var(--text-accent); text-decoration: none; }
         .markdown-body a:hover { text-decoration: underline; }
         .markdown-body code {
-            background: #e8eaed; padding: 0.2em 0.4em; border-radius: 4px; color: #d63384;
+            background: var(--bg-secondary); padding: 0.2em 0.4em; border-radius: 4px;
             font-size: 85%; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
         }
         .markdown-body pre {
-            background: #0d1117; padding: 16px; border-radius: 8px;
-            overflow-x: auto; margin: 0 0 16px; border: 1px solid #30363d;
+            background: var(--bg-secondary); padding: 16px; border-radius: 8px;
+            overflow-x: auto; margin: 0 0 16px; border: 1px solid var(--border-color);
         }
-        .markdown-body pre code { background: none; padding: 0; font-size: 85%; color: #e6edf3; }
+        .markdown-body pre code { background: none; padding: 0; font-size: 85%; }
         .markdown-body blockquote { border-left: 4px solid var(--border-color); padding: 0 16px; color: var(--text-secondary); margin: 0 0 16px; }
         .markdown-body ul, .markdown-body ol { padding-left: 2em; margin: 0 0 16px; }
         .markdown-body li { margin: 4px 0; }
@@ -504,93 +181,43 @@
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.5); display: flex;
             align-items: center; justify-content: center; z-index: 1000;
-            animation: fadeIn 0.2s;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
         .modal {
-            background: white; border-radius: 16px; padding: 28px;
-            width: 440px; max-width: 90vw; 
-            box-shadow: 0 24px 48px rgba(0,0,0,0.2);
-            animation: modalSlide 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white; border-radius: 12px; padding: 24px;
+            width: 420px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        @keyframes modalSlide {
-            from { opacity: 0; transform: translateY(-20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .modal h3 { 
-            margin-bottom: 20px; 
-            font-size: 20px;
-            font-weight: 400;
-            color: var(--text-primary);
-        }
+        .modal h3 { margin-bottom: 16px; font-size: 18px; }
         .modal input[type="text"] {
-            width: 100%; padding: 12px 16px; border: 2px solid var(--border-color);
-            border-radius: 10px; font-size: 14px; outline: none;
-            transition: all 0.2s;
-            font-family: inherit;
+            width: 100%; padding: 10px 14px; border: 1px solid var(--border-color);
+            border-radius: 8px; font-size: 14px; outline: none;
+            transition: border-color 0.15s;
         }
-        .modal input[type="text"]:focus { 
-            border-color: var(--text-accent);
-            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
-        }
+        .modal input[type="text"]:focus { border-color: var(--text-accent); }
         .modal .modal-actions {
-            display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;
+            display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;
         }
         .modal .modal-actions button {
-            padding: 10px 24px; border-radius: 20px; font-size: 14px;
-            font-weight: 500; cursor: pointer; border: none;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 8px 18px; border-radius: 8px; font-size: 14px;
+            font-weight: 600; cursor: pointer; border: 1px solid var(--border-color);
+            transition: all 0.15s;
         }
-        .modal .btn-primary { 
-            background: var(--text-accent); 
-            color: white;
-            box-shadow: var(--shadow-sm);
-        }
-        .modal .btn-primary:hover { 
-            background: #1557b0;
-            box-shadow: var(--shadow-md);
-            transform: translateY(-1px);
-        }
-        .modal .btn-secondary { 
-            background: white; 
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-        .modal .btn-secondary:hover { 
-            background: var(--bg-hover);
-        }
+        .modal .btn-primary { background: var(--text-accent); color: white; border-color: var(--text-accent); }
+        .modal .btn-primary:hover { background: #1d4ed8; }
+        .modal .btn-secondary { background: white; color: var(--text-primary); }
+        .modal .btn-secondary:hover { background: var(--bg-hover); }
 
         /* Toast notification */
         .toast {
-            position: fixed; bottom: 32px; right: 32px;
-            padding: 14px 24px; border-radius: 12px;
+            position: fixed; bottom: 24px; right: 24px;
+            padding: 12px 20px; border-radius: 8px;
             color: white; font-size: 14px; font-weight: 500;
-            z-index: 2000; 
-            animation: toastSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1), toastFadeOut 0.3s ease 2.7s;
-            box-shadow: var(--shadow-md);
-            display: flex; align-items: center; gap: 10px;
+            z-index: 2000; animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
-        .toast.success { background: #1e8e3e; }
-        .toast.error { background: #d93025; }
-        .toast::before {
-            content: '✓';
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .toast.error::before {
-            content: '✕';
-        }
-        @keyframes toastSlideIn { 
-            from { transform: translateX(400px); opacity: 0; } 
-            to { transform: translateX(0); opacity: 1; } 
-        }
-        @keyframes toastFadeOut { 
-            from { opacity: 1; } 
-            to { opacity: 0; } 
-        }
+        .toast.success { background: #16a34a; }
+        .toast.error { background: #dc2626; }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
 
         .loading { display: flex; align-items: center; justify-content: center; height: 200px; }
         .spinner {
@@ -607,58 +234,57 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
+
     </style>
 </head>
 <body>
     <div class="app">
         <div class="sidebar">
             <div class="sidebar-header">
-                <h1><span>📝</span> MD Preview</h1>
-                <div class="header-buttons" style="display: flex; gap: 8px;">
-                    <button class="btn-new-dropdown" onclick="openSearch()" title="Search in files (Cmd+Shift+F)" style="background: #34a853; padding: 8px 12px;">
-                        <span style="font-size:16px;">🔍</span>
+                <h1><span>&#x1F4DD;</span> MD Preview</h1>
+                <button class="btn-new" onclick="showNewFolderModal()" style="background:#10b981;margin-right:8px;" title="New Folder">
+                        <span style="font-size:16px;">📁</span> Folder
                     </button>
-                    <button class="btn-new-dropdown" onclick="toggleDropdown()" title="New...">
-                        <span style="font-size:16px;">+</span> New
-                        <span class="arrow">▼</span>
-                    </button>
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <div class="dropdown-menu-item" onclick="selectDropdownOption('file')">
-                            <span class="icon">📝</span>
-                            <span>New File</span>
-                        </div>
-                        <div class="dropdown-menu-item" onclick="selectDropdownOption('folder')">
-                            <span class="icon">📁</span>
-                            <span>New Folder</span>
-                        </div>
-                    </div>
-                </div>
+                    <button class="btn-new" onclick="showNewFileModal()">
+                    <span style="font-size:16px;">+</span> New
+                </button>
             </div>
             <div class="breadcrumb" id="breadcrumb"></div>
-            <div class="search-container" id="searchContainer">
-                <div class="search-input-wrapper">
-                    <input type="text" class="search-input" id="searchInput" placeholder="Search in files... (Cmd+Shift+F)" oninput="performSearch()">
-                    <span class="search-icon">🔍</span>
-                    <button class="search-close" onclick="closeSearch()" title="Close search">✕</button>
-                </div>
-            </div>
-            <div class="search-count" id="searchCount" style="display:none;"></div>
-            <div class="search-results" id="searchResults"></div>
             <div class="file-list" id="fileList"></div>
         </div>
         <div class="main-content" id="mainContent">
             <div class="welcome">
-                <div class="welcome-icon">📄</div>
-                <h2>Welcome to Markdown Preview</h2>
-                <p>Browse files on the left and click any <strong>.md</strong> file to preview it. Use the <strong>+ New</strong> button to create files or folders. Right-click items to rename or delete them. Drag files to move them into folders!</p>
+                <div class="welcome-icon">&#x1F4C4;</div>
+                <h2>Welcome to Code & Markdown Editor</h2>
+                <p>Browse files on the left and click any supported file to edit it. Use the <strong>+ New</strong> button to create files in various formats including <strong>Markdown</strong>, <strong>SQL</strong>, <strong>JSON</strong>, <strong>Python</strong>, and more!</p>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="modalOverlay" style="display:none;" onclick="hideModal(event)">
         <div class="modal" onclick="event.stopPropagation()">
-            <h3 id="modalTitle">New Markdown File</h3>
+            <h3 id="modalTitle">New File</h3>
             <input type="text" id="modalInput" placeholder="filename.md" onkeydown="if(event.key==='Enter')confirmModal()">
+            <div style="margin-top: 12px;">
+                <label style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 6px;">File Type:</label>
+                <select id="fileTypeSelect" onchange="updateFileTypePlaceholder()" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px;">
+                    <option value="md">Markdown (.md)</option>
+                    <option value="txt">Text (.txt)</option>
+                    <option value="js">JavaScript (.js)</option>
+                    <option value="ts">TypeScript (.ts)</option>
+                    <option value="py">Python (.py)</option>
+                    <option value="java">Java (.java)</option>
+                    <option value="sql">SQL (.sql)</option>
+                    <option value="json">JSON (.json)</option>
+                    <option value="xml">XML (.xml)</option>
+                    <option value="html">HTML (.html)</option>
+                    <option value="css">CSS (.css)</option>
+                    <option value="sh">Shell Script (.sh)</option>
+                    <option value="yaml">YAML (.yaml)</option>
+                    <option value="properties">Properties (.properties)</option>
+                    <option value="conf">Config (.conf)</option>
+                </select>
+            </div>
             <div class="modal-actions">
                 <button class="btn-secondary" onclick="closeModal()">Cancel</button>
                 <button class="btn-primary" onclick="confirmModal()">Create</button>
@@ -681,13 +307,8 @@
         let activeFile = null;
         let isEditing = false;
         let currentEditPath = null;
-        let modalMode = 'file';
-        let renameTarget = null;
-        let draggedElement = null;
+        let currentFileType = null;
 
-        // =========================================================================
-        // Directory and File Loading
-        // =========================================================================
         async function loadDirectory(path) {
             currentPath = path || '';
             const fileList = document.getElementById('fileList');
@@ -705,7 +326,7 @@
 
         function updateBreadcrumb(cp, rootPath) {
             const bc = document.getElementById('breadcrumb');
-            let html = '<span class="breadcrumb-item" onclick="loadDirectory(\'\')">🏠 Root</span>';
+            let html = '<span class="breadcrumb-item" onclick="loadDirectory(\'\')">&#x1F3E0; Root</span>';
             if (cp) {
                 const parts = cp.split('/').filter(Boolean);
                 let acc = '';
@@ -730,30 +351,36 @@
             }
             let html = '';
             for (const item of items) {
-                let icon, cls;
-                if (item.name === '..') { icon = '⬆️'; cls = 'directory'; }
-                else if (item.isDirectory) { icon = '📁'; cls = 'directory'; }
-                else if (item.isMarkdown) { icon = '📝'; cls = 'markdown'; }
-                else { icon = '📄'; cls = 'other-file'; }
-                const act = activeFile === item.path ? ' active' : '';
-                const badge = item.isMarkdown ? '<span class="file-badge">MD</span>' : '';
-                
-                const draggable = item.name !== '..' ? ' draggable="true"' : '';
-                const dataPath = ' data-path="' + escAttr(item.path) + '"';
-                const dataIsDir = ' data-is-dir="' + item.isDirectory + '"';
-                
-                if (item.isDirectory) {
-                    html += '<div class="file-item ' + cls + act + '"' + draggable + dataPath + dataIsDir;
-                    html += ' onclick="loadDirectory(\'' + escAttr(item.path) + '\')"';
-                    html += ' oncontextmenu="showContextMenu(event, \'' + escAttr(item.path) + '\', ' + item.isDirectory + ')"';
-                    html += ' ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragleave="handleDragLeave(event)">';
-                } else if (item.isMarkdown) {
-                    html += '<div class="file-item ' + cls + act + '"' + draggable + dataPath + dataIsDir;
-                    html += ' onclick="loadMarkdown(\'' + escAttr(item.path) + '\')"';
-                    html += ' oncontextmenu="showContextMenu(event, \'' + escAttr(item.path) + '\', false)"';
-                    html += ' ondragstart="handleDragStart(event)">';
+                let icon, cls, fileType, isEditable;
+
+                if (item.name === '..') {
+                    icon = '&#x2B06;&#xFE0F;'; cls = 'directory';
+                    fileType = 'directory'; isEditable = false;
+                } else if (item.isDirectory) {
+                    icon = '&#x1F4C1;'; cls = 'directory';
+                    fileType = 'directory'; isEditable = false;
                 } else {
-                    html += '<div class="file-item ' + cls + '"' + dataPath + dataIsDir + '>';
+                    // Detect file type client-side from filename
+                    fileType = getFileTypeFromFilename(item.name);
+                    isEditable = isEditableFileType(fileType);
+
+                    if (isEditable) {
+                        icon = getFileIcon(fileType);
+                        cls = item.isMarkdown ? 'markdown' : 'editable';
+                    } else {
+                        icon = '&#x1F4C4;'; cls = 'other-file';
+                    }
+                }
+
+                const act = activeFile === item.path ? ' active' : '';
+                const badge = isEditable ? getFileBadge(fileType) : '';
+
+                if (item.isDirectory) {
+                    html += '<div class="file-item ' + cls + act + '" onclick="loadDirectory(\'' + escAttr(item.path) + '\')">';
+                } else if (isEditable) {
+                    html += '<div class="file-item ' + cls + act + '" onclick="loadFile(\'' + escAttr(item.path) + '\', \'' + escAttr(fileType) + '\')">';
+                } else {
+                    html += '<div class="file-item ' + cls + '">';
                 }
                 html += '<span class="file-icon">' + icon + '</span>';
                 html += '<span class="file-name">' + esc(item.name) + '</span>';
@@ -762,178 +389,11 @@
             fileList.innerHTML = html;
         }
 
-        // =========================================================================
-        // Drag and Drop Handlers
-        // =========================================================================
-        function handleDragStart(e) {
-            draggedElement = e.currentTarget;
-            e.currentTarget.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', e.currentTarget.dataset.path);
-        }
-
-        function handleDragOver(e) {
-            if (e.preventDefault) e.preventDefault();
-            const target = e.currentTarget;
-            if (target.dataset.isDir === 'true' && target !== draggedElement) {
-                target.classList.add('drag-over');
-                e.dataTransfer.dropEffect = 'move';
-            }
-            return false;
-        }
-
-        function handleDragLeave(e) {
-            e.currentTarget.classList.remove('drag-over');
-        }
-
-        async function handleDrop(e) {
-            if (e.stopPropagation) e.stopPropagation();
-            e.preventDefault();
-            
-            const target = e.currentTarget;
-            target.classList.remove('drag-over');
-            
-            if (target.dataset.isDir !== 'true' || target === draggedElement) return false;
-            
-            const sourcePath = draggedElement.dataset.path;
-            const targetPath = target.dataset.path;
-            
-            try {
-                const resp = await fetch('/api/move', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ sourcePath, targetPath })
-                });
-                const data = await resp.json();
-                if (data.error) {
-                    showToast(data.error, 'error');
-                } else {
-                    showToast('Moved successfully!', 'success');
-                    loadDirectory(currentPath);
-                }
-            } catch (e) {
-                showToast('Failed to move: ' + e.message, 'error');
-            }
-            
-            if (draggedElement) {
-                draggedElement.classList.remove('dragging');
-                draggedElement = null;
-            }
-            return false;
-        }
-
-        // =========================================================================
-        // Context Menu
-        // =========================================================================
-        function showContextMenu(e, path, isDirectory) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const existing = document.querySelector('.context-menu');
-            if (existing) existing.remove();
-            
-            if (path.endsWith('/..') || path === '..') return;
-            
-            const menu = document.createElement('div');
-            menu.className = 'context-menu';
-            menu.style.left = e.pageX + 'px';
-            menu.style.top = e.pageY + 'px';
-            
-            menu.innerHTML = `
-                <div class="context-menu-item" onclick="renameItem('${escAttr(path)}')">
-                    <span>✏️</span> Rename
-                </div>
-                <div class="context-menu-separator"></div>
-                <div class="context-menu-item danger" onclick="deleteItem('${escAttr(path)}', ${isDirectory})">
-                    <span>🗑️</span> Delete
-                </div>
-            `;
-            
-            document.body.appendChild(menu);
-            
-            setTimeout(() => {
-                document.addEventListener('click', function closeMenu() {
-                    menu.remove();
-                    document.removeEventListener('click', closeMenu);
-                });
-            }, 0);
-        }
-
-        async function renameItem(path) {
-            renameTarget = path;
-            const fileName = path.split('/').pop();
-            modalMode = 'rename';
-            document.getElementById('modalTitle').textContent = 'Rename';
-            document.getElementById('modalInput').value = fileName;
-            document.getElementById('modalInput').placeholder = 'New name';
-            document.getElementById('modalOverlay').style.display = 'flex';
-            document.getElementById('modalInput').focus();
-            document.getElementById('modalInput').select();
-        }
-
-        async function performRename(newName) {
-            if (!renameTarget || !newName) return;
-            
-            try {
-                const resp = await fetch('/api/rename', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ oldPath: renameTarget, newName: newName })
-                });
-                const data = await resp.json();
-                if (data.error) {
-                    showToast(data.error, 'error');
-                } else {
-                    showToast('Renamed successfully!', 'success');
-                    loadDirectory(currentPath);
-                    if (activeFile === renameTarget) {
-                        activeFile = data.newPath;
-                        loadMarkdown(data.newPath);
-                    }
-                }
-            } catch (e) {
-                showToast('Failed to rename: ' + e.message, 'error');
-            }
-            renameTarget = null;
-        }
-
-        async function deleteItem(path, isDirectory) {
-            const fileName = path.split('/').pop();
-            const type = isDirectory ? 'folder' : 'file';
-            if (!confirm(`Are you sure you want to delete ${type} "${fileName}"?${isDirectory ? ' This will delete all contents.' : ''}`)) {
-                return;
-            }
-            
-            try {
-                const resp = await fetch('/api/delete', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ path })
-                });
-                const data = await resp.json();
-                if (data.error) {
-                    showToast(data.error, 'error');
-                } else {
-                    showToast('Deleted successfully!', 'success');
-                    loadDirectory(currentPath);
-                    if (activeFile === path) {
-                        activeFile = null;
-                        const mc = document.getElementById('mainContent');
-                        mc.innerHTML = '<div class="welcome"><div class="welcome-icon">📄</div><h2>Welcome to Markdown Preview</h2><p>Browse files on the left and click any <strong>.md</strong> file to preview it.</p></div>';
-                    }
-                }
-            } catch (e) {
-                showToast('Failed to delete: ' + e.message, 'error');
-            }
-        }
-
-        // =========================================================================
-        // Markdown Loading and Display
-        // =========================================================================
-        async function loadMarkdown(path) {
+        async function loadFile(path, fileType) {
             activeFile = path;
             isEditing = false;
             currentEditPath = path;
+            currentFileType = fileType;
             const mc = document.getElementById('mainContent');
             mc.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
             refreshFileList();
@@ -941,96 +401,178 @@
                 const resp = await fetch('/api/content?path=' + encodeURIComponent(path));
                 const data = await resp.json();
                 if (data.error) { mc.innerHTML = '<div class="error-msg">' + esc(data.error) + '</div>'; return; }
-                showPreview(data.name, data.path, data.content);
+                showPreview(data.name, data.path, data.content, fileType);
             } catch (e) {
                 mc.innerHTML = '<div class="error-msg">Failed to load: ' + esc(e.message) + '</div>';
             }
         }
 
-        function showPreview(name, path, content) {
+        // Keep backward compatibility for any existing references
+        async function loadMarkdown(path) {
+            return loadFile(path, 'markdown');
+        }
+
+        function showPreview(name, path, content, fileType) {
             const mc = document.getElementById('mainContent');
+            const icon = getFileIcon(fileType);
+
             let html = '<div class="content-header">';
-            html += '<span style="font-size:20px;">📝</span>';
+            html += '<span style="font-size:20px;">' + icon + '</span>';
             html += '<h2>' + esc(name) + '</h2>';
             html += '<span class="file-path">' + esc(path) + '</span>';
-            html += '<button class="btn-edit" onclick="startEdit(\'' + escAttr(path) + '\')">✏️ Edit</button>';
+            html += '<button class="btn-edit" onclick="startEdit(\'' + escAttr(path) + '\', \'' + escAttr(fileType) + '\')">&#x270F;&#xFE0F; Edit</button>';
             html += '</div>';
-            html += '<div class="markdown-body" style="flex:1;overflow-y:auto;">' + marked.parse(content) + '</div>';
+
+            if (fileType === 'markdown') {
+                // Render markdown
+                html += '<div class="markdown-body" style="flex:1;overflow-y:auto;">' + marked.parse(content) + '</div>';
+            } else {
+                // Show syntax-highlighted code
+                html += '<div class="markdown-body" style="flex:1;overflow-y:auto;">';
+                html += '<pre><code class="language-' + getHighlightLanguage(fileType) + '">' + esc(content) + '</code></pre>';
+                html += '</div>';
+            }
+
             mc.innerHTML = html;
             mc.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
         }
 
-        // =========================================================================
-        // Editor Functions
-        // =========================================================================
-        function startEdit(path) {
+        function getHighlightLanguage(fileType) {
+            const mapping = {
+                'javascript': 'javascript',
+                'typescript': 'typescript',
+                'python': 'python',
+                'java': 'java',
+                'sql': 'sql',
+                'json': 'json',
+                'xml': 'xml',
+                'html': 'html',
+                'css': 'css',
+                'bash': 'bash',
+                'yaml': 'yaml',
+                'text': 'plaintext',
+                'log': 'plaintext',
+                'config': 'ini',
+                'properties': 'properties'
+            };
+            return mapping[fileType] || 'plaintext';
+        }
+
+        function startEdit(path, fileType) {
             isEditing = true;
             currentEditPath = path;
+            currentFileType = fileType;
             const mc = document.getElementById('mainContent');
             mc.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
             fetch('/api/content?path=' + encodeURIComponent(path))
                 .then(r => r.json())
                 .then(data => {
                     if (data.error) { mc.innerHTML = '<div class="error-msg">' + esc(data.error) + '</div>'; return; }
-                    showEditor(data.name, data.path, data.content);
+                    showEditor(data.name, data.path, data.content, fileType);
                 });
         }
 
-        function showEditor(name, path, content) {
+        function showEditor(name, path, content, fileType) {
             const mc = document.getElementById('mainContent');
+            const icon = getFileIcon(fileType);
+
             let html = '<div class="content-header">';
-            html += '<span style="font-size:20px;">✏️</span>';
+            html += '<span style="font-size:20px;">&#x270F;&#xFE0F;</span>';
             html += '<h2>Editing: ' + esc(name) + '</h2>';
             html += '<span class="file-path">' + esc(path) + '</span>';
-            html += '<button class="btn-cancel" onclick="loadMarkdown(\'' + escAttr(path) + '\')">Cancel</button>';
-            html += '<button class="btn-save" onclick="saveFile(\'' + escAttr(path) + '\')">💾 Save</button>';
+            html += '<button class="btn-cancel" onclick="loadFile(\'' + escAttr(path) + '\', \'' + escAttr(fileType) + '\')">Cancel</button>';
+            html += '<button class="btn-save" onclick="saveFile(\'' + escAttr(path) + '\')">&#x1F4BE; Save</button>';
             html += '</div>';
             html += '<div class="editor-container">';
             html += '<div class="editor-pane">';
-            html += '<div class="editor-pane-header">✏️ Editor</div>';
+            html += '<div class="editor-pane-header">&#x270F;&#xFE0F; Editor</div>';
             html += '<textarea class="editor-textarea" id="editorTextarea" oninput="updatePreview()">' + esc(content) + '</textarea>';
             html += '</div>';
             html += '<div class="preview-pane">';
-            html += '<div class="preview-pane-header">👁️ Preview</div>';
-            html += '<div class="preview-content markdown-body" id="livePreview"></div>';
+            if (fileType === 'markdown') {
+                html += '<div class="preview-pane-header">&#x1F441;&#xFE0F; Preview</div>';
+                html += '<div class="preview-content markdown-body" id="livePreview"></div>';
+            } else {
+                html += '<div class="preview-pane-header">&#x1F441;&#xFE0F; Syntax Preview</div>';
+                html += '<div class="preview-content" id="livePreview" style="padding: 0;"></div>';
+            }
             html += '</div>';
             html += '</div>';
             mc.innerHTML = html;
             updatePreview();
         }
 
-        function showNewEditor(name, path) {
+        function showNewEditor(name, path, fileType) {
             activeFile = path;
             currentEditPath = path;
+            currentFileType = fileType;
             isEditing = true;
             const mc = document.getElementById('mainContent');
-            const defaultContent = '# ' + name.replace('.md', '') + '\n\nStart writing your markdown here...\n';
+
+            const defaultContent = getDefaultContent(name, fileType);
+            const icon = getFileIcon(fileType);
+
             let html = '<div class="content-header">';
-            html += '<span style="font-size:20px;">✨</span>';
+            html += '<span style="font-size:20px;">&#x2728;</span>';
             html += '<h2>New: ' + esc(name) + '</h2>';
             html += '<span class="file-path">' + esc(path) + '</span>';
             html += '<button class="btn-cancel" onclick="cancelNew()">Cancel</button>';
-            html += '<button class="btn-save" onclick="saveFile(\'' + escAttr(path) + '\')">💾 Save</button>';
+            html += '<button class="btn-save" onclick="saveFile(\'' + escAttr(path) + '\')">&#x1F4BE; Save</button>';
             html += '</div>';
             html += '<div class="editor-container">';
             html += '<div class="editor-pane">';
-            html += '<div class="editor-pane-header">✏️ Editor</div>';
+            html += '<div class="editor-pane-header">&#x270F;&#xFE0F; Editor</div>';
             html += '<textarea class="editor-textarea" id="editorTextarea" oninput="updatePreview()">' + esc(defaultContent) + '</textarea>';
             html += '</div>';
             html += '<div class="preview-pane">';
-            html += '<div class="preview-pane-header">👁️ Preview</div>';
-            html += '<div class="preview-content markdown-body" id="livePreview"></div>';
+            if (fileType === 'markdown') {
+                html += '<div class="preview-pane-header">&#x1F441;&#xFE0F; Preview</div>';
+                html += '<div class="preview-content markdown-body" id="livePreview"></div>';
+            } else {
+                html += '<div class="preview-pane-header">&#x1F441;&#xFE0F; Syntax Preview</div>';
+                html += '<div class="preview-content" id="livePreview" style="padding: 0;"></div>';
+            }
             html += '</div>';
             html += '</div>';
             mc.innerHTML = html;
             updatePreview();
+        }
+
+        function getDefaultContent(name, fileType) {
+            const baseName = name.replace(/\.[^.]*$/, '');
+
+            switch (fileType) {
+                case 'markdown':
+                    return '# ' + baseName + '\n\nStart writing your markdown here...\n';
+                case 'javascript':
+                    return '// ' + name + '\n\nconsole.log("Hello, World!");\n';
+                case 'typescript':
+                    return '// ' + name + '\n\nconst message: string = "Hello, World!";\nconsole.log(message);\n';
+                case 'python':
+                    return '# ' + name + '\n\nprint("Hello, World!")\n';
+                case 'java':
+                    const className = baseName.charAt(0).toUpperCase() + baseName.slice(1);
+                    return 'public class ' + className + ' {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n    }\n}\n';
+                case 'sql':
+                    return '-- ' + name + '\n\nSELECT \'Hello, World!\' AS message;\n';
+                case 'json':
+                    return '{\n  "name": "' + baseName + '",\n  "description": "A new JSON file"\n}\n';
+                case 'html':
+                    return '<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>' + baseName + '</title>\n</head>\n<body>\n    <h1>Hello, World!</h1>\n</body>\n</html>\n';
+                case 'css':
+                    return '/* ' + name + ' */\n\nbody {\n    font-family: Arial, sans-serif;\n    margin: 0;\n    padding: 20px;\n}\n';
+                case 'yaml':
+                    return '# ' + name + '\n\nname: ' + baseName + '\ndescription: A new YAML file\n';
+                default:
+                    return '# ' + name + '\n\n';
+            }
         }
 
         function cancelNew() {
             activeFile = null;
             isEditing = false;
             const mc = document.getElementById('mainContent');
-            mc.innerHTML = '<div class="welcome"><div class="welcome-icon">📄</div><h2>Welcome to Markdown Preview</h2><p>Browse files on the left and click any <strong>.md</strong> file to preview it.</p></div>';
+            mc.innerHTML = '<div class="welcome"><div class="welcome-icon">&#x1F4C4;</div><h2>Welcome to Code & Markdown Editor</h2><p>Browse files on the left and click any supported file to edit it. Use the <strong>+ New</strong> button to create files in various formats!</p></div>';
             refreshFileList();
         }
 
@@ -1038,8 +580,14 @@
             const ta = document.getElementById('editorTextarea');
             const pv = document.getElementById('livePreview');
             if (ta && pv) {
-                pv.innerHTML = marked.parse(ta.value);
-                pv.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+                if (currentFileType === 'markdown') {
+                    pv.innerHTML = marked.parse(ta.value);
+                    pv.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+                } else {
+                    const lang = getHighlightLanguage(currentFileType);
+                    pv.innerHTML = '<pre style="margin:0; height:100%; overflow-y:auto;"><code class="language-' + lang + '">' + esc(ta.value) + '</code></pre>';
+                    pv.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+                }
             }
         }
 
@@ -1057,31 +605,36 @@
                 if (data.error) { showToast(data.error, 'error'); return; }
                 showToast('File saved successfully!', 'success');
                 refreshFileList();
-                loadMarkdown(path);
+                loadFile(path, currentFileType);
             } catch (e) {
                 showToast('Failed to save: ' + e.message, 'error');
             }
         }
 
-        // =========================================================================
-        // Modal Functions
-        // =========================================================================
         function showNewFileModal() {
             modalMode = 'file';
-            document.getElementById('modalTitle').textContent = 'New Markdown File';
-            document.getElementById('modalInput').value = '';
+            document.getElementById('modalTitle').textContent = 'New File';
             document.getElementById('modalInput').placeholder = 'filename.md';
+            document.getElementById('fileTypeSelect').value = 'md';
+
+            // Show file type selector
+            const fileTypeContainer = document.querySelector('#fileTypeSelect').parentElement;
+            fileTypeContainer.style.display = 'block';
+
             document.getElementById('modalOverlay').style.display = 'flex';
-            document.getElementById('modalInput').focus();
+            const inp = document.getElementById('modalInput');
+            inp.value = '';
+            inp.focus();
         }
 
-        function showNewFolderModal() {
-            modalMode = 'folder';
-            document.getElementById('modalTitle').textContent = 'New Folder';
-            document.getElementById('modalInput').value = '';
-            document.getElementById('modalInput').placeholder = 'folder-name';
-            document.getElementById('modalOverlay').style.display = 'flex';
-            document.getElementById('modalInput').focus();
+        function updateFileTypePlaceholder() {
+            const select = document.getElementById('fileTypeSelect');
+            const input = document.getElementById('modalInput');
+            const extension = select.value;
+            input.placeholder = `filename.${extension}`;
+
+            // Clear any existing filename to avoid confusion
+            input.value = '';
         }
 
         function hideModal(e) {
@@ -1090,55 +643,9 @@
 
         function closeModal() {
             document.getElementById('modalOverlay').style.display = 'none';
-            modalMode = 'file';
-            renameTarget = null;
         }
 
-        function confirmModal() {
-            let name = document.getElementById('modalInput').value.trim();
-            if (!name) return;
-            
-            const mode = modalMode;
-            closeModal();
-            
-            if (mode === 'folder') {
-                createFolder(name);
-            } else if (mode === 'rename') {
-                performRename(name);
-            } else if (mode === 'file') {
-                // File mode - add .md extension if not present
-                if (!name.endsWith('.md') && !name.endsWith('.markdown')) name += '.md';
-                const path = currentPath ? currentPath + '/' + name : name;
-                showNewEditor(name, path);
-            }
-        }
 
-        // =========================================================================
-        // Folder Operations
-        // =========================================================================
-        async function createFolder(name) {
-            const path = currentPath ? currentPath + '/' + name : name;
-            try {
-                const resp = await fetch('/api/mkdir', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ path })
-                });
-                const data = await resp.json();
-                if (data.error) {
-                    showToast(data.error, 'error');
-                } else {
-                    showToast('Folder created successfully!', 'success');
-                    loadDirectory(currentPath);
-                }
-            } catch (e) {
-                showToast('Failed to create folder: ' + e.message, 'error');
-            }
-        }
-
-        // =========================================================================
-        // Utility Functions
-        // =========================================================================
         function showToast(msg, type) {
             const t = document.createElement('div');
             t.className = 'toast ' + type;
@@ -1165,153 +672,206 @@
             return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
         }
 
-        // =========================================================================
-        // Dropdown Functions
-        // =========================================================================
-        function toggleDropdown() {
-            const dropdown = document.getElementById('dropdownMenu');
-            const button = document.querySelector('.btn-new-dropdown');
-            dropdown.classList.toggle('show');
-            button.classList.toggle('open');
-            
-            if (dropdown.classList.contains('show')) {
-                setTimeout(() => {
-                    document.addEventListener('click', function closeDropdown(e) {
-                        if (!e.target.closest('.header-buttons')) {
-                            dropdown.classList.remove('show');
-                            button.classList.remove('open');
-                            document.removeEventListener('click', closeDropdown);
-                        }
-                    });
-                }, 0);
-            }
+        function getFileIcon(fileType) {
+            const icons = {
+                'markdown': '&#x1F4DD;',
+                'javascript': '🟨',
+                'typescript': '🔷',
+                'python': '🐍',
+                'java': '☕',
+                'sql': '🗃️',
+                'json': '📋',
+                'xml': '📄',
+                'html': '🌐',
+                'css': '🎨',
+                'bash': '💻',
+                'yaml': '⚙️',
+                'csv': '📊',
+                'text': '📄',
+                'log': '📊',
+                'config': '⚙️',
+                'properties': '⚙️'
+            };
+            return icons[fileType] || '📄';
         }
 
-        function selectDropdownOption(option) {
-            const dropdown = document.getElementById('dropdownMenu');
-            const button = document.querySelector('.btn-new-dropdown');
-            dropdown.classList.remove('show');
-            button.classList.remove('open');
-            
-            if (option === 'file') {
-                showNewFileModal();
-            } else if (option === 'folder') {
-                showNewFolderModal();
-            }
+        function getFileBadge(fileType) {
+            if (!fileType || fileType === 'directory') return '';
+            const badges = {
+                'markdown': '<span class="file-badge">MD</span>',
+                'javascript': '<span class="file-badge" style="background:#f7df1e;color:#000;">JS</span>',
+                'typescript': '<span class="file-badge" style="background:#3178c6;color:#fff;">TS</span>',
+                'python': '<span class="file-badge" style="background:#306998;color:#fff;">PY</span>',
+                'java': '<span class="file-badge" style="background:#ed8b00;color:#fff;">JAVA</span>',
+                'sql': '<span class="file-badge" style="background:#00758f;color:#fff;">SQL</span>',
+                'json': '<span class="file-badge" style="background:#000;color:#fff;">JSON</span>',
+                'xml': '<span class="file-badge" style="background:#ff6600;color:#fff;">XML</span>',
+                'html': '<span class="file-badge" style="background:#e34c26;color:#fff;">HTML</span>',
+                'css': '<span class="file-badge" style="background:#1572b6;color:#fff;">CSS</span>',
+                'bash': '<span class="file-badge" style="background:#4eaa25;color:#fff;">SH</span>',
+                'yaml': '<span class="file-badge" style="background:#cb171e;color:#fff;">YAML</span>',
+                'csv': '<span class="file-badge" style="background:#28a745;color:#fff;">CSV</span>',
+                'text': '<span class="file-badge" style="background:#6c757d;color:#fff;">TXT</span>'
+            };
+            return badges[fileType] || '<span class="file-badge" style="background:#6c757d;color:#fff;">' + fileType.toUpperCase() + '</span>';
         }
 
-        // =========================================================================
-        // Search Functions
-        // =========================================================================
-        let searchTimeout = null;
-        
-        function openSearch() {
-            document.getElementById('searchContainer').classList.add('active');
-            document.getElementById('searchResults').classList.add('active');
-            document.getElementById('fileList').style.display = 'none';
-            document.getElementById('searchInput').focus();
-        }
-        
-        function closeSearch() {
-            document.getElementById('searchContainer').classList.remove('active');
-            document.getElementById('searchResults').classList.remove('active');
-            document.getElementById('searchCount').style.display = 'none';
-            document.getElementById('fileList').style.display = 'block';
-            document.getElementById('searchInput').value = '';
-            document.getElementById('searchResults').innerHTML = '';
-        }
-        
-        async function performSearch() {
-            const query = document.getElementById('searchInput').value.trim();
-            const searchResults = document.getElementById('searchResults');
-            const searchCount = document.getElementById('searchCount');
-            
-            if (searchTimeout) clearTimeout(searchTimeout);
-            
-            if (!query) {
-                searchResults.innerHTML = '';
-                searchCount.style.display = 'none';
-                return;
-            }
-            
-            searchResults.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-            searchCount.style.display = 'none';
-            
-            searchTimeout = setTimeout(async () => {
-                try {
-                    const resp = await fetch('/api/search', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ path: currentPath, query: query })
-                    });
-                    const data = await resp.json();
-                    
-                    if (data.error) {
-                        searchResults.innerHTML = '<div class="error-msg">' + esc(data.error) + '</div>';
-                        return;
-                    }
-                    
-                    displaySearchResults(data.results, query);
-                } catch (e) {
-                    searchResults.innerHTML = '<div class="error-msg">Search failed: ' + esc(e.message) + '</div>';
-                }
-            }, 300);
-        }
-        
-        function displaySearchResults(results, query) {
-            const searchResults = document.getElementById('searchResults');
-            const searchCount = document.getElementById('searchCount');
-            
-            if (results.length === 0) {
-                searchResults.innerHTML = '<div class="search-empty">No results found for "' + esc(query) + '"</div>';
-                searchCount.style.display = 'none';
-                return;
-            }
-            
-            searchCount.textContent = results.length + ' result' + (results.length !== 1 ? 's' : '') + ' found';
-            searchCount.style.display = 'block';
-            
-            let html = '';
-            for (const result of results) {
-                const highlighted = highlightMatch(result.lineContent, result.matchStart, result.matchEnd);
-                html += '<div class="search-result-item" onclick="openSearchResult(\'' + escAttr(result.filePath) + '\')">';
-                html += '<div class="search-result-file">📄 ' + esc(result.fileName) + '</div>';
-                html += '<div class="search-result-line">Line ' + result.lineNumber + '</div>';
-                html += '<div class="search-result-content">' + highlighted + '</div>';
-                html += '</div>';
-            }
-            
-            searchResults.innerHTML = html;
-        }
-        
-        function highlightMatch(content, start, end) {
-            const before = esc(content.substring(0, start));
-            const match = esc(content.substring(start, end));
-            const after = esc(content.substring(end));
-            return before + '<span class="search-highlight">' + match + '</span>' + after;
-        }
-        
-        function openSearchResult(filePath) {
-            closeSearch();
-            loadMarkdown(filePath);
-        }
-        
-        // Keyboard shortcut: Cmd+Shift+F or Ctrl+Shift+F
-        document.addEventListener('keydown', function(e) {
-            if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'F') {
-                e.preventDefault();
-                openSearch();
-            }
-            // ESC to close search
-            if (e.key === 'Escape' && document.getElementById('searchContainer').classList.contains('active')) {
-                closeSearch();
-            }
-        });
+        function getFileTypeFromFilename(filename) {
+            const lower = filename.toLowerCase();
 
-        // =========================================================================
-        // Initialize
-        // =========================================================================
+            // Programming languages
+            if (lower.endsWith('.java')) return 'java';
+            if (lower.endsWith('.js')) return 'javascript';
+            if (lower.endsWith('.ts')) return 'typescript';
+            if (lower.endsWith('.py')) return 'python';
+            if (lower.endsWith('.sql')) return 'sql';
+            if (lower.endsWith('.sh')) return 'bash';
+            if (lower.endsWith('.kt')) return 'kotlin';
+            if (lower.endsWith('.go')) return 'go';
+            if (lower.endsWith('.rs')) return 'rust';
+            if (lower.endsWith('.cpp') || lower.endsWith('.cc') || lower.endsWith('.cxx')) return 'cpp';
+            if (lower.endsWith('.c')) return 'c';
+            if (lower.endsWith('.cs')) return 'csharp';
+            if (lower.endsWith('.php')) return 'php';
+            if (lower.endsWith('.rb')) return 'ruby';
+            if (lower.endsWith('.swift')) return 'swift';
+
+            // Data formats
+            if (lower.endsWith('.json')) return 'json';
+            if (lower.endsWith('.xml')) return 'xml';
+            if (lower.endsWith('.yaml') || lower.endsWith('.yml')) return 'yaml';
+            if (lower.endsWith('.csv')) return 'csv';
+            if (lower.endsWith('.toml')) return 'toml';
+
+            // Web technologies
+            if (lower.endsWith('.html')) return 'html';
+            if (lower.endsWith('.css')) return 'css';
+            if (lower.endsWith('.scss')) return 'scss';
+            if (lower.endsWith('.less')) return 'less';
+
+            // Config files
+            if (lower.endsWith('.properties')) return 'properties';
+            if (lower.endsWith('.conf')) return 'config';
+            if (lower.endsWith('.ini')) return 'ini';
+            if (lower.endsWith('.env')) return 'bash';
+
+            // Build files
+            if (lower.endsWith('.gradle')) return 'gradle';
+            if (lower.endsWith('.gradle.kts')) return 'kotlin';
+            if (lower.includes('dockerfile')) return 'dockerfile';
+
+            // Documentation
+            if (lower.endsWith('.md') || lower.endsWith('.markdown')) return 'markdown';
+            if (lower.endsWith('.txt')) return 'text';
+            if (lower.endsWith('.log')) return 'log';
+
+            return 'text';
+        }
+
+        function isEditableFileType(fileType) {
+            const editableTypes = [
+                'markdown', 'text', 'log', 'java', 'javascript', 'typescript', 'python',
+                'sql', 'bash', 'kotlin', 'go', 'rust', 'cpp', 'c', 'csharp', 'php',
+                'ruby', 'swift', 'json', 'xml', 'yaml', 'csv', 'toml', 'html', 'css',
+                'scss', 'less', 'properties', 'config', 'ini', 'gradle', 'dockerfile'
+            ];
+            return editableTypes.includes(fileType);
+        }
+
         loadDirectory('');
+
+        // File management functions
+        let modalMode = 'file';
+        
+        function showNewFolderModal() {
+            modalMode = 'folder';
+            document.getElementById('modalTitle').textContent = 'New Folder';
+            document.getElementById('modalInput').value = '';
+            document.getElementById('modalInput').placeholder = 'folder-name';
+
+            // Hide file type selector for folders
+            const fileTypeContainer = document.querySelector('#fileTypeSelect').parentElement;
+            fileTypeContainer.style.display = 'none';
+
+            document.getElementById('modalOverlay').style.display = 'flex';
+            document.getElementById('modalInput').focus();
+        }
+        
+        async function createFolder(name) {
+            const path = currentPath ? currentPath + '/' + name : name;
+            try {
+                const resp = await fetch('/api/mkdir', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path })
+                });
+                const data = await resp.json();
+                if (data.error) {
+                    showToast(data.error, 'error');
+                } else {
+                    showToast('Folder created successfully!', 'success');
+                    loadDirectory(currentPath);
+                }
+            } catch (e) {
+                showToast('Failed to create folder: ' + e.message, 'error');
+            }
+        }
+        
+        // Handle modal confirmation for different modes
+        confirmModal = function() {
+            let name = document.getElementById('modalInput').value.trim();
+            if (!name) return;
+
+            if (modalMode === 'folder') {
+                closeModal();
+                createFolder(name);
+                modalMode = 'file';
+            } else {
+                // Handle file creation with file type
+                const fileTypeSelect = document.getElementById('fileTypeSelect');
+                const selectedExtension = fileTypeSelect.value;
+
+                // Add extension if not already present
+                if (!name.includes('.')) {
+                    name += '.' + selectedExtension;
+                } else {
+                    // Validate that the extension matches the selection
+                    const currentExt = name.split('.').pop();
+                    if (currentExt !== selectedExtension) {
+                        name = name.replace(/\.[^.]+$/, '.' + selectedExtension);
+                    }
+                }
+
+                const path = currentPath ? currentPath + '/' + name : name;
+                const fileType = getFileTypeFromExtension(selectedExtension);
+                closeModal();
+                showNewEditor(name, path, fileType);
+            }
+        };
+
+        function getFileTypeFromExtension(ext) {
+            const mapping = {
+                'md': 'markdown',
+                'txt': 'text',
+                'js': 'javascript',
+                'ts': 'typescript',
+                'py': 'python',
+                'java': 'java',
+                'sql': 'sql',
+                'json': 'json',
+                'xml': 'xml',
+                'html': 'html',
+                'css': 'css',
+                'sh': 'bash',
+                'yaml': 'yaml',
+                'yml': 'yaml',
+                'properties': 'properties',
+                'conf': 'config'
+            };
+            return mapping[ext] || 'text';
+        }
+
+
     </script>
 </body>
 </html>
